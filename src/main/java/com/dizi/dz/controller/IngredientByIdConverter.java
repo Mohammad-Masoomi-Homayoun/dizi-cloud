@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class IngredientByIdConverter implements Converter<String, Ingredient> {
+public class IngredientByIdConverter implements Converter<Long, Ingredient> {
 
     private IngredientRepository ingredientRepo;
 
@@ -19,10 +19,10 @@ public class IngredientByIdConverter implements Converter<String, Ingredient> {
         this.ingredientRepo = ingredientRepo;
     }
 
-    private Map<String, Ingredient> ingredientMap = new HashMap<>();
+    private Map<Long, Ingredient> ingredientMap = new HashMap<>();
 
     @Override
-    public Ingredient convert(String id) {
+    public Ingredient convert(Long id) {
         return ingredientRepo.findById(id).orElse(null);
     }
 }
