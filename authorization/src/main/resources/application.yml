@@ -1,12 +1,36 @@
 spring:
   application:
     name: authorization-service
+  security:
+    oauth2:
+      authorizationserver:
+        client:
+          homayoun:
+            registration:
+              client-id: "dizi-web-client"
+              client-secret: "{noop}secret"
+              client-authentication-methods:
+                - "client_secret_basic"
+              authorization-grant-types:
+                - "authorization_code"
+                - "refresh_token"
+                - "client_credentials"
+              redirect-uris:
+                - "http://127.0.0.1:8080/login/oauth2/code/dizi-cloud"
+              scopes:
+                - "writeIngredients"
+                - "deleteIngredients"
+            require-authorization-consent: true
+
+    user:
+      name: "homayoun"
+      password: "{noop}secret"
 
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:authorization
-    username: admin
-    password: "admin123"
+    username: sa
+    password: ""
     generate-unique-name: false
 
   h2:
@@ -17,6 +41,7 @@ spring:
 logging:
   level:
     com.dizi.dz.controller: INFO
+    org.springframework.security: trace
 
 server:
   port: 9000
