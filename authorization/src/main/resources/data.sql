@@ -1,2 +1,0 @@
-insert into app_user (id, username, password, role) values (1, 'admin', '$2a$10$EAg1lQvRk3dnR5eQaCJpWeFexaaJD9Z11GMRY41cU.jKmFJMPX8bG', 'ADMIN');
-insert into app_user (id, username, password, role) values (2, 'user', '$2a$10$Q6L1D9V6pt5UbF2QqT0YOepYOcd7MPHG4X/YoQGzM/BmgRbY5ZCy2', 'USER');

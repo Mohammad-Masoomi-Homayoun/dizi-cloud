@@ -5,7 +5,7 @@ spring:
     oauth2:
       authorizationserver:
         client:
-          homayoun:
+          dizi-cloud:
             registration:
               client-id: "dizi-web-client"
               client-secret: "{noop}secret"
@@ -25,18 +25,6 @@ spring:
     user:
       name: "homayoun"
       password: "{noop}secret"
-
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:authorization
-    username: sa
-    password: ""
-    generate-unique-name: false
-
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
 
 logging:
   level:

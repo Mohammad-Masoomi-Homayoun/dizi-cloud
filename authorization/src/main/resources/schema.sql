@@ -1,7 +1,0 @@
-CREATE TABLE IF NOT EXISTS app_user
-(
-    id VARCHAR(250) PRIMARY KEY,
-    username VARCHAR(250) NOT NULL,
-    password VARCHAR(250) NOT NULL,
-    role VARCHAR(250) NOT NULL
-);
