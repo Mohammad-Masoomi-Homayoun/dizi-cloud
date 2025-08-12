@@ -1,6 +1,11 @@
 spring:
   application:
     name: dizi-cloud
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:9000/oauth2/jwks
 
   datasource:
     driver-class-name: org.h2.Driver
@@ -17,3 +22,4 @@ spring:
 logging:
   level:
     com.dizi.dz.controller: INFO
+    org.springframework.security: trace

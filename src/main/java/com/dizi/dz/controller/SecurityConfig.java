@@ -7,10 +7,6 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -44,34 +40,42 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers(HttpMethod.POST, "/api/ingredients").hasRole("ADMIN")
-//                        .requestMatchers(HttpMethod.DELETE, "/api/ingredients/**").hasRole("ADMIN")
-//                        .requestMatchers(HttpMethod.GET, "/api/ingredients").permitAll()
+                        // Permit POST and DELETE with scopes
+                        .requestMatchers(HttpMethod.POST, "/api/ingredients").hasAuthority("SCOPE_writeIngredients")
+                        .requestMatchers(HttpMethod.DELETE, "/api/ingredients/**").hasAuthority("SCOPE_deleteIngredients")
+
+                        // Public access for GET ingredients and static/open paths
+                        .requestMatchers(HttpMethod.GET, "/api/ingredients").permitAll()
                         .requestMatchers("/", "/login", "/public/**").permitAll()
+
+                        // Explicitly allow exact path and wildcard for OAuth2 code callback
+                        .requestMatchers("/login/oauth2/code/dizi-cloud", "/login/oauth2/code/dizi-cloud/**").permitAll()
+
+                        // Any other request requires authentication
                         .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults());
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
         return http.build();
     }
 
-    @Bean // Need to implement UserDetailsService as mentioned this is authorization specification
-    public UserDetailsService userDetailsService() {
-        UserDetails admin = User
-                .withUsername("admin")
-                .password("{noop}admin123")
-//                .password(passwordEncoder().encode("admin123"))
-                .roles("ADMIN")
-                //.roles("ROLE_ADMIN") // shows error because automatically adds "ROLE_" prefix
-                .build();
-
-        UserDetails user = User
-                .withUsername("user")
-                .password("{noop}user123")
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(admin, user);
-    }
+//    @Bean // Need to implement UserDetailsService as mentioned this is authorization specification
+//    public UserDetailsService userDetailsService() {
+//        UserDetails admin = User
+//                .withUsername("admin")
+//                .password("{noop}admin123")
+////                .password(passwordEncoder().encode("admin123"))
+//                .roles("ADMIN")
+//                //.roles("ROLE_ADMIN") // shows error because automatically adds "ROLE_" prefix
+//                .build();
+//
+//        UserDetails user = User
+//                .withUsername("user")
+//                .password("{noop}user123")
+//                .roles("USER")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(admin, user);
+//    }
 
 //    @Bean
 //    public PasswordEncoder passwordEncoder() {

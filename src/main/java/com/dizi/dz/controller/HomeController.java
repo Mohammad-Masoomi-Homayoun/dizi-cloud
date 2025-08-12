@@ -11,4 +11,9 @@ public class HomeController {
         return "home";
     }
 
+    @GetMapping("/login/oauth2/code/dizi-cloud")
+    public String oauth2Login() {
+        return "code";
+    }
+
 }
