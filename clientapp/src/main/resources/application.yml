@@ -1,0 +1,29 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          dizi-cloud-app:
+            provider: dizi-cloud
+            client-id: dizi-web-client
+            client-secret: secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://localhost:8081/login/oauth2/code/dizi-cloud"
+            scope:
+              - writeIngredients
+              - deleteIngredients
+              - openid
+        provider:
+          dizi-cloud:
+            authorization-uri: http://127.0.0.1:9000/oauth2/authorize
+            token-uri: http://127.0.0.1:9000/oauth2/token
+            user-info-uri: http://127.0.0.1:9000/userinfo
+            user-name-attribute: sub
+            jwk-set-uri: http://localhost:9000/oauth2/jwks
+
+server:
+  port: 8081
+
+logging:
+  level:
+    org.springframework.security: trace

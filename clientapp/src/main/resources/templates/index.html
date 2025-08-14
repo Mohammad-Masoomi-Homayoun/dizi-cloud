@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Successful login</title>
+</head>
+<body>
+<h1>Now we can access the resource server with token</h1>
+
+<h2>Ingredients:</h2>
+<ul id="ingredientList"></ul>
+
+<input type="text" id="newIngredientName" placeholder="Ingredient name">
+<input type="text" id="newIngredientType" placeholder="Ingredient type">
+<button id="addIngredientBtn">Add Ingredient</button>
+
+<script>
+    // Utility to fetch the token from /token endpoint
+    async function fetchToken() {
+        const res = await fetch('/token');
+        if (!res.ok) throw new Error('Failed to fetch token');
+        return res.text();
+    }
+
+    // Load ingredients
+    async function loadIngredients() {
+        try {
+            const token = await fetchToken();
+            const res = await fetch('http://localhost:8080/api/ingredients', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const data = await res.json();
+            const list = document.getElementById('ingredientList');
+            list.innerHTML = '';
+            data.forEach(ing => {
+                const li = document.createElement('li');
+                li.textContent = `${ing.name} (${ing.type})`;
+                const delBtn = document.createElement('button');
+                delBtn.textContent = 'Delete';
+                delBtn.onclick = () => deleteIngredient(ing.id);
+                li.appendChild(delBtn);
+                list.appendChild(li);
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    // Add ingredient
+    document.getElementById('addIngredientBtn').onclick = async () => {
+        const name = document.getElementById('newIngredientName').value;
+        const type = document.getElementById('newIngredientType').value;
+        if (!name || !type) return alert('Enter both name and type');
+
+        try {
+            const token = await fetchToken();
+            await fetch('http://localhost:8080/api/ingredients', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({ name, type })
+            });
+            document.getElementById('newIngredientName').value = '';
+            document.getElementById('newIngredientType').value = '';
+            loadIngredients();
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    // Delete ingredient
+    async function deleteIngredient(id) {
+        try {
+            const token = await fetchToken();
+            await fetch(`http://localhost:8080/api/ingredients/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            loadIngredients();
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    // Initial load
+    loadIngredients();
+</script>
+</body>
+</html>

@@ -6,39 +6,32 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableMethodSecurity  // old version -> EnableGlobalMethodSecurity
 public class SecurityConfig {
 
-    /* Old version of Spring Security
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable() // برای راحتی تست (در پروژه واقعی مراقب باش)
-                .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/ingredients").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "/ingredients").hasAnyRole("USER", "ADMIN")
-                .antMatchers("/", "/login", "/public/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .defaultSuccessUrl("/dashboard", true)
-                .and()
-                .logout()
-                .logoutSuccessUrl("/");
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/api/**")
+                        .allowedOrigins("http://localhost:8081") // your client
+                        .allowedMethods("GET", "POST", "DELETE", "PUT", "OPTIONS")
+                        .allowedHeaders("Authorization", "Content-Type") // allow JWT
+                        .allowCredentials(true);
+            }
+        };
     }
-
-     */
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         // Permit POST and DELETE with scopes
                         .requestMatchers(HttpMethod.POST, "/api/ingredients").hasAuthority("SCOPE_writeIngredients")
