@@ -28,6 +28,7 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .oauth2Login(oauth -> oauth
+                        .loginPage("/login")
                         .authorizationEndpoint(authorization ->
                                 authorization.authorizationRequestRepository(
                                         new HttpSessionOAuth2AuthorizationRequestRepository()))

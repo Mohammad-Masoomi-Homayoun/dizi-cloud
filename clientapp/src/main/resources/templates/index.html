@@ -2,27 +2,100 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Successful login</title>
+    <title>Ingredients Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2rem;
+            background-color: #f9f9f9;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background-color: #fff;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f0f0f0;
+        }
+
+        button {
+            padding: 6px 10px;
+            margin-left: 5px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #toc {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background-color: #eef;
+            border: 1px solid #ccd;
+        }
+
+        input[type="text"] {
+            padding: 6px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+
+    <!-- Include html-table-of-contents repo script -->
+    <script src="https://cdn.jsdelivr.net/gh/matthewkastor/html-table-of-contents@master/html-toc.min.js"></script>
 </head>
 <body>
+
+<div id="toc"></div>
+
 <h1>Now we can access the resource server with token</h1>
 
-<h2>Ingredients:</h2>
-<ul id="ingredientList"></ul>
+<h2>Ingredients</h2>
 
+<table id="ingredientTable">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<h2>Add New Ingredient</h2>
 <input type="text" id="newIngredientName" placeholder="Ingredient name">
 <input type="text" id="newIngredientType" placeholder="Ingredient type">
 <button id="addIngredientBtn">Add Ingredient</button>
 
 <script>
-    // Utility to fetch the token from /token endpoint
+    // Fetch token from backend
     async function fetchToken() {
         const res = await fetch('/token');
         if (!res.ok) throw new Error('Failed to fetch token');
         return res.text();
     }
 
-    // Load ingredients
+    // Load ingredients into the table
     async function loadIngredients() {
         try {
             const token = await fetchToken();
@@ -30,23 +103,24 @@
                 headers: { 'Authorization': 'Bearer ' + token }
             });
             const data = await res.json();
-            const list = document.getElementById('ingredientList');
-            list.innerHTML = '';
+            const tbody = document.querySelector('#ingredientTable tbody');
+            tbody.innerHTML = '';
+
             data.forEach(ing => {
-                const li = document.createElement('li');
-                li.textContent = `${ing.name} (${ing.type})`;
-                const delBtn = document.createElement('button');
-                delBtn.textContent = 'Delete';
-                delBtn.onclick = () => deleteIngredient(ing.id);
-                li.appendChild(delBtn);
-                list.appendChild(li);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+          <td>${ing.name}</td>
+          <td>${ing.type}</td>
+          <td><button onclick="deleteIngredient('${ing.id}')">Delete</button></td>
+        `;
+                tbody.appendChild(row);
             });
         } catch (err) {
             console.error(err);
         }
     }
 
-    // Add ingredient
+    // Add new ingredient
     document.getElementById('addIngredientBtn').onclick = async () => {
         const name = document.getElementById('newIngredientName').value;
         const type = document.getElementById('newIngredientType').value;
@@ -62,6 +136,7 @@
                 },
                 body: JSON.stringify({ name, type })
             });
+
             document.getElementById('newIngredientName').value = '';
             document.getElementById('newIngredientType').value = '';
             loadIngredients();
@@ -70,7 +145,7 @@
         }
     };
 
-    // Delete ingredient
+    // Delete ingredient by ID
     async function deleteIngredient(id) {
         try {
             const token = await fetchToken();
@@ -84,8 +159,19 @@
         }
     }
 
-    // Initial load
-    loadIngredients();
+    // On page load
+    document.addEventListener('DOMContentLoaded', () => {
+        loadIngredients();
+
+        // Initialize Table of Contents
+        htmltoc.makeTOC({
+            tocSelector: "#toc",
+            contentSelector: "body",
+            headingSelector: "h1, h2",
+            smoothScroll: true
+        });
+    });
 </script>
+
 </body>
 </html>
