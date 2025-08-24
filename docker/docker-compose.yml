@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  artemis:
+    image: apache/activemq-artemis:latest
+    ports:
+      - "8161:8161"  # Management console
+      - "61616:61616"  # OpenWire protocol
+      - "5672:5672"    # AMQP protocol
+    environment:
+      - ARTEMIS_USER=admin  # Username
+      - ARTEMIS_PASSWORD=admin  # Password
+    volumes:
+      - artemis-data:/var/lib/artemis/data  # Persistent storage
+
+volumes:
+  artemis-data:
