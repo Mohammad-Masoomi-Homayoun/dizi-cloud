@@ -3,6 +3,7 @@ package com.dizi.dz.controller;
 import com.dizi.dz.entity.DiziOrder;
 import com.dizi.dz.messaging.JmsOrderMessagingService;
 import jakarta.annotation.Resource;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,5 +27,10 @@ public class OrderMessagingController {
         order.setPlacedAt(new Date());
 
         jmsOrderMessagingService.sendOrder(order);
+    }
+
+    @GetMapping("/receive")
+    public DiziOrder receiveOrder() {
+        return jmsOrderMessagingService.receiveOrder();
     }
 }
