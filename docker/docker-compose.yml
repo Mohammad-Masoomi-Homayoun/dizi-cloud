@@ -1,17 +1,28 @@
-version: '3.8'
-
 services:
   artemis:
     image: apache/activemq-artemis:latest
     ports:
-      - "8161:8161"  # Management console
+      - "8161:8161"  # Management console http://localhost:8161/console
       - "61616:61616"  # OpenWire protocol
-      - "5672:5672"    # AMQP protocol
+      - "5673:5672"    # AMQP protocol
     environment:
       - ARTEMIS_USER=admin  # Username
       - ARTEMIS_PASSWORD=admin  # Password
     volumes:
       - artemis-data:/var/lib/artemis/data  # Persistent storage
 
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"     # RabbitMQ broker (AMQP protocol)
+      - "15672:15672"   # Management UI (http://localhost:15672)
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
 volumes:
   artemis-data:
+  rabbitmq_data:

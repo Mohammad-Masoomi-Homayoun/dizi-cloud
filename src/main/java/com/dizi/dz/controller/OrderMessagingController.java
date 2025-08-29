@@ -21,12 +21,20 @@ public class OrderMessagingController {
     private Long idCounter = 0L;
 
     @PostMapping("/send")
-    public void sendOrder(@RequestBody DiziOrder order) {
+    public void sendOrderViaJms(@RequestBody DiziOrder order) {
 
         order.setId(idCounter++);
         order.setPlacedAt(new Date());
 
-        jmsOrderMessagingService.sendOrder(order);
+        jmsOrderMessagingService.sendOrderViaJms(order);
+    }
+
+    @PostMapping("/send/rabbit")
+    public void sendOrderViaRabbit(@RequestBody DiziOrder order) {
+
+        order.setId(idCounter++);
+        order.setPlacedAt(new Date());
+        jmsOrderMessagingService.sendOrderViaRabbit(order);
     }
 
     @GetMapping("/receive")

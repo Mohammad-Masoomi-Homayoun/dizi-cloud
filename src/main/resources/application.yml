@@ -9,6 +9,15 @@ spring:
     template:
       default-destination: dizi-cloud.order.queue
 
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin
+    template:
+      routing-key: kitchens.central
+      exchange: dizi-cloud.order
+
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:dizicloud
