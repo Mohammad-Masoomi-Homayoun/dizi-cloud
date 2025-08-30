@@ -1,7 +1,7 @@
 package com.dizi.dz.controller;
 
 import com.dizi.dz.entity.DiziOrder;
-import com.dizi.dz.messaging.JmsOrderMessagingService;
+import com.dizi.dz.messaging.OrderMessagingService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,36 +9,32 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
-
 @RestController
 @RequestMapping("/api/orders")
 public class OrderMessagingController {
 
-    @Resource
-    private JmsOrderMessagingService jmsOrderMessagingService;
-
-    private Long idCounter = 0L;
+    @Resource(name = "jms")
+    private OrderMessagingService jmsOrderMessagingService;
+    @Resource(name = "rabbit")
+    private OrderMessagingService rabbitOrderMessagingService;
 
     @PostMapping("/send")
     public void sendOrderViaJms(@RequestBody DiziOrder order) {
-
-        order.setId(idCounter++);
-        order.setPlacedAt(new Date());
-
-        jmsOrderMessagingService.sendOrderViaJms(order);
+        jmsOrderMessagingService.sendOrder(order);
     }
 
     @PostMapping("/send/rabbit")
     public void sendOrderViaRabbit(@RequestBody DiziOrder order) {
-
-        order.setId(idCounter++);
-        order.setPlacedAt(new Date());
-        jmsOrderMessagingService.sendOrderViaRabbit(order);
+        rabbitOrderMessagingService.sendOrder(order);
     }
 
     @GetMapping("/receive")
     public DiziOrder receiveOrder() {
         return jmsOrderMessagingService.receiveOrder();
+    }
+
+    @GetMapping("/receive/rabbit")
+    public DiziOrder receiveOrderFromRabbit() {
+        return rabbitOrderMessagingService.receiveOrder();
     }
 }
