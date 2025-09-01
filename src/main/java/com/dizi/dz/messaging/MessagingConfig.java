@@ -1,9 +1,9 @@
 package com.dizi.dz.messaging;
 
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.SmartMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
 
 @Configuration
 public class MessagingConfig {
@@ -16,7 +16,7 @@ public class MessagingConfig {
 //    }
 
     @Bean
-    public Jackson2JsonMessageConverter messageConverter() {
+    public SmartMessageConverter messageConverter() {
         return new Jackson2JsonMessageConverter();
     }
 }

@@ -17,6 +17,7 @@ spring:
     template:
       routing-key: kitchens.central
       exchange: dizi-cloud.order
+      default-receive-queue: kitchens.central
 
   datasource:
     driver-class-name: org.h2.Driver
