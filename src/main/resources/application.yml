@@ -19,6 +19,22 @@ spring:
       exchange: dizi-cloud.order
       default-receive-queue: kitchens.central
 
+  kafka:
+    bootstrap-servers:
+      - localhost:29092
+    template:
+      default-topic: dizi-cloud.orders.topic
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      bootstrap-servers: localhost:29092
+      group-id: dz-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.dizi.dz.entity
+
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:dizicloud

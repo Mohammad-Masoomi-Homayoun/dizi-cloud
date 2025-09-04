@@ -17,6 +17,8 @@ public class OrderMessagingController {
     private OrderMessagingService jmsOrderMessagingService;
     @Resource(name = "rabbit")
     private OrderMessagingService rabbitOrderMessagingService;
+    @Resource(name = "kafka")
+    private OrderMessagingService kafkaOrderMessagingService;
 
     @PostMapping("/send")
     public void sendOrderViaJms(@RequestBody DiziOrder order) {
@@ -28,6 +30,11 @@ public class OrderMessagingController {
         rabbitOrderMessagingService.sendOrder(order);
     }
 
+    @PostMapping("/send/kafka")
+    public void sendOrderViaKafka(@RequestBody DiziOrder order) {
+        kafkaOrderMessagingService.sendOrder(order);
+    }
+
     @GetMapping("/receive")
     public DiziOrder receiveOrder() {
         return jmsOrderMessagingService.receiveOrder();
@@ -36,5 +43,10 @@ public class OrderMessagingController {
     @GetMapping("/receive/rabbit")
     public DiziOrder receiveOrderFromRabbit() {
         return rabbitOrderMessagingService.receiveOrder();
+    }
+
+    @GetMapping("/receive/kafka")
+    public DiziOrder receiveOrderFromKafka() {
+        return kafkaOrderMessagingService.receiveOrder();
     }
 }
