@@ -11,9 +11,9 @@ public class OrderSubmitMessageHandler implements GenericHandler<EmailOrder> {
     private RestTemplate rest;
     private ApiProperties apiProps;
 
-    public OrderSubmitMessageHandler(ApiProperties apiProps, RestTemplate rest) {
+    public OrderSubmitMessageHandler(ApiProperties apiProps) {
         this.apiProps = apiProps;
-        this.rest = rest;
+        this.rest = new RestTemplate();
     }
 
     @Override

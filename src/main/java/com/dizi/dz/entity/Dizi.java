@@ -31,4 +31,7 @@ public class Dizi {
         this.createdAt = new Date();
     }
 
+    public Dizi() {
+    }
+
 }
