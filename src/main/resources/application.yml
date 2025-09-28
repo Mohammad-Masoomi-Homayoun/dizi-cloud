@@ -17,3 +17,13 @@ spring:
 logging:
   level:
     com.dizi.dz.controller: INFO
+
+dizi-cloud:
+  email:
+    host: smtp.example.com
+    username: TEST
+    password: TEST
+    mailbox: INBOX
+    poll-rate: 10000
+  api:
+    url: http://localhost:8080/api
