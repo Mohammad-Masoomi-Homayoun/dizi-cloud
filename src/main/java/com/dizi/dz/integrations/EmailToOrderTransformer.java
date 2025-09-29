@@ -23,7 +23,7 @@ public class EmailToOrderTransformer extends AbstractMailMessageTransformer<Emai
 
     private static Logger log = LoggerFactory.getLogger(EmailToOrderTransformer.class);
 
-    private static final String SUBJECT_KEYWORDS = "TACO ORDER";
+    private static final String SUBJECT_KEYWORDS = "DIZI ORDER";
 
     @Override
     protected AbstractIntegrationMessageBuilder<EmailOrder> doTransform(Message mailMessage) {

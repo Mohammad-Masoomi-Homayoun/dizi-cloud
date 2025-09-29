@@ -16,8 +16,8 @@ public class EmailOrderingFlow {
         return IntegrationFlow
                 .from(Mail.imapInboundAdapter(emailProps.getImapUrl()),
                         e -> e.poller(Pollers.fixedDelay(emailProps.getPollRate()))) // comp 1: inbound adapter
-                .transform(emailToOrderTransformer)
-                .handle(orderSubmitHandler)
+                .transform(emailToOrderTransformer) // comp 2: transformer
+                .handle(orderSubmitHandler) // comp 3: service activator
                 .get();
     }
 }
